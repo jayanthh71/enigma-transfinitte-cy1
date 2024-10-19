@@ -36,6 +36,7 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
                 background_color="#6e56cf",
                 border_radius="12px",
                 max_width="70%",
+                font_family="Instrument Sans",
             ),
             rx.cond(
                 res == "waiting",
@@ -47,6 +48,7 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
                     background_color="#1f1f1f",
                     border_radius="12px",
                     max_width="70%",
+                    font_family="Instrument Sans",
                 ),
             ),
         ),
@@ -112,7 +114,11 @@ def index() -> rx.Component:
     return rx.container(
         rx.vstack(
             rx.spacer(),
-            rx.heading("Welcome to CAST.ai", size="9"),
+            rx.heading(
+                "Welcome to CAST.ai",
+                size="9",
+                font_family="Instrument Sans",
+            ),
             rx.divider(),
             chatbox(),
             align="center",
@@ -124,9 +130,12 @@ def index() -> rx.Component:
 
 
 app = rx.App(
+    stylesheets=[
+        "https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap",
+    ],
     theme=rx.theme(
         appearance="dark",
         accent_color="violet",
-    )
+    ),
 )
 app.add_page(index)

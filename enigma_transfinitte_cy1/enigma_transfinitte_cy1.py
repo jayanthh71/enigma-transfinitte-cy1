@@ -44,23 +44,37 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
     return rx.flex(
         rx.cond(
             is_user,
-            rx.text(
-                req,
-                padding_inline="10px",
-                padding_block="5px",
-                background_color="#6e56cf",
-                border_radius="12px",
-                max_width="70%",
-                font_family="Instrument Sans",
+            rx.hstack(
+                rx.text(
+                    req,
+                    padding_inline="10px",
+                    padding_block="5px",
+                    background_color="#6e56cf",
+                    border_radius="12px",
+                    max_width="70%",
+                    font_family="Instrument Sans",
+                ),
+                rx.image(
+                    "user.png",
+                    width="37px",
+                    height="32px",
+                ),
             ),
-            rx.markdown(
-                res,
-                padding_inline="10px",
-                padding_block="5px",
-                background_color="#1f1f1f",
-                border_radius="12px",
-                max_width="70%",
-                font_family="Instrument Sans",
+            rx.hstack(
+                rx.image(
+                    "ai.png",
+                    width="32px",
+                    height="32px",
+                ),
+                rx.markdown(
+                    res,
+                    padding_inline="10px",
+                    padding_block="5px",
+                    background_color="#1f1f1f",
+                    border_radius="12px",
+                    max_width="70%",
+                    font_family="Instrument Sans",
+                ),
             ),
         ),
         direction="row-reverse" if is_user else "row",

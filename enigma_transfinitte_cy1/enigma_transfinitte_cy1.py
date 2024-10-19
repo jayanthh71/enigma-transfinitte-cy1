@@ -5,20 +5,19 @@ from rxconfig import config
 class ChatState(rx.State):
     request: str
     response: str
+    chat_history: list[tuple[str, str]]
 
-    chat_history: list
-
-    def handle_request(self, data: dict):
+    def handle_submit(self, data: dict):
         self.request = data["prompt"]
         self.response = "This is a test response"
 
 
-def textbubble(res_type: str) -> rx.Component:
+def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
     return rx.flex(
         rx.cond(
-            res_type == "user",
+            is_user,
             rx.text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+                req,
                 padding_inline="10px",
                 padding_block="5px",
                 background_color="#482c6c",
@@ -26,7 +25,7 @@ def textbubble(res_type: str) -> rx.Component:
                 max_width="70%",
             ),
             rx.text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+                res,
                 padding_inline="10px",
                 padding_block="5px",
                 background_color="#1f1f1f",
@@ -34,7 +33,7 @@ def textbubble(res_type: str) -> rx.Component:
                 max_width="70%",
             ),
         ),
-        direction="row-reverse" if res_type == "user" else "row",
+        direction="row-reverse" if is_user else "row",
     )
 
 
@@ -42,10 +41,8 @@ def chatbox() -> rx.Component:
     return rx.flex(
         rx.scroll_area(
             rx.flex(
-                textbubble("user"),
-                textbubble("ai"),
-                textbubble("user"),
-                textbubble("ai"),
+                textbubble(True, req="Hello"),
+                textbubble(False, res="Hi"),
                 padding="15px",
                 direction="column",
                 spacing="4",
@@ -71,7 +68,7 @@ def chatbox() -> rx.Component:
                 ),
                 align="center",
             ),
-            on_submit=ChatState.handle_request,
+            on_submit=ChatState.handle_submit,
             reset_on_submit=True,
         ),
         spacing="3",

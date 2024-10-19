@@ -1,4 +1,5 @@
 import reflex as rx
+from .response import model
 
 
 class ChatState(rx.State):
@@ -6,6 +7,7 @@ class ChatState(rx.State):
     response: str
     chat_history: list[tuple[bool, str]] = []
     is_user: bool = True
+    processing: bool = True
 
     def handle_submit(self, data: dict):
         self.request = data["prompt"]
@@ -14,12 +16,25 @@ class ChatState(rx.State):
 
         self.chat_history.append((self.is_user, self.request))
         self.get_response()
-        self.chat_history.append((not self.is_user, self.response))
+
+    def set_response(self, new):
+        self.response = new
+
+    def toggle_processing(self):
+        self.processing = not self.processing
 
     def get_response(self):
-        self.response = "waiting"
-        # Logic here
-        self.response = "This is a test response"
+        try:
+            response = model.generate_content(
+                [
+                    "You are an application security testing tool. I am going to provide you with a code. Point out exactly what my vulnerabilities are, and mention the level of danger of the vulnerability, show the exact lines where the specific vulnerability is found, and finally generate the lines of code without the vulnerability\n\n",
+                    str(self.request),
+                ],
+            )
+            self.response = response.text
+        except:
+            pass
+        self.chat_history.append((not self.is_user, self.response))
 
     def clear_history(self):
         self.chat_history = []
@@ -38,18 +53,14 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
                 max_width="70%",
                 font_family="Instrument Sans",
             ),
-            rx.cond(
-                res == "waiting",
-                rx.spinner(),
-                rx.text(
-                    res,
-                    padding_inline="10px",
-                    padding_block="5px",
-                    background_color="#1f1f1f",
-                    border_radius="12px",
-                    max_width="70%",
-                    font_family="Instrument Sans",
-                ),
+            rx.markdown(
+                res,
+                padding_inline="10px",
+                padding_block="5px",
+                background_color="#1f1f1f",
+                border_radius="12px",
+                max_width="70%",
+                font_family="Instrument Sans",
             ),
         ),
         direction="row-reverse" if is_user else "row",
@@ -75,28 +86,36 @@ def chatbox() -> rx.Component:
             type="hover",
             scrollbars="vertical",
         ),
-        rx.hstack(
-            rx.form.root(
-                rx.input(
+        rx.form.root(
+            rx.hstack(
+                rx.text_area(
                     placeholder="Ask anything",
-                    id="prompt",
+                    name="prompt",
                     variant="soft",
                     radius="full",
                     height="50px",
                     class_name="relative w-full",
-                    padding_inline="15px",
+                    padding_inline="5px",
                 ),
-                on_submit=ChatState.handle_submit,
-                reset_on_submit=True,
+                rx.button(
+                    rx.cond(
+                        ChatState.processing,
+                        rx.icon(
+                            "arrow_up",
+                            on_click=ChatState.toggle_processing,
+                        ),
+                        rx.spinner(),
+                    ),
+                ),
+                rx.icon_button(
+                    "trash-2",
+                    on_click=ChatState.clear_history,
+                    disabled=~ChatState.chat_history,
+                ),
+                align="center",
             ),
-            rx.icon_button(
-                "trash-2",
-                radius="full",
-                size="3",
-                on_click=ChatState.clear_history,
-                disabled=~ChatState.chat_history,
-            ),
-            align="center",
+            on_submit=ChatState.handle_submit,
+            reset_on_submit=True,
         ),
         background_image="url('Background.png')",
         background_size="cover",

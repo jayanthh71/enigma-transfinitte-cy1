@@ -1,1 +1,8 @@
-reflex==0.6.2.post1
+reflex==0.6.3
+langchain
+langchain_core
+langchain_google_genai
+python-dotenv
+langserve[all]
+uvicorn
+fastapi

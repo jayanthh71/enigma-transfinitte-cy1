@@ -1,5 +1,4 @@
 import reflex as rx
-from .sidebar import sidebar
 
 
 class ChatState(rx.State):
@@ -97,6 +96,8 @@ def chatbox() -> rx.Component:
             ),
             align="center",
         ),
+        background_image="url('Background.png')",
+        background_size="cover",
         spacing="3",
         direction="column",
         padding="15px",
@@ -109,7 +110,6 @@ def chatbox() -> rx.Component:
 
 def index() -> rx.Component:
     return rx.container(
-        # sidebar(),
         rx.vstack(
             rx.spacer(),
             rx.heading("Welcome to CAST.ai", size="9"),

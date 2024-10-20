@@ -1,5 +1,6 @@
 import reflex as rx
 from .response import model
+from .gitfiles import git_repository
 
 
 class ChatState(rx.State):
@@ -27,11 +28,40 @@ class ChatState(rx.State):
         try:
             response = model.generate_content(
                 [
-                    "You are an application security testing tool. I am going to provide you with a code. Point out exactly what my vulnerabilities are, and mention the level of danger of the vulnerability, show the exact lines where the specific vulnerability is found, and finally generate the lines of code without the vulnerability\n\n",
+                    """From the given input:
+                      if the input has any sort of programming language code in it,
+                        then = (return a tuple with '1' and the code eg. ('1', 'print("Hello World")'))
+                      else if the input has a github respository link,
+                        then = (return the tuple '2' and the github link eg. ('2', 'https://github.com/username/repository'))
+                      else,
+                        then = (Forget all conditions and act like a normal chatbot and reply to the user)
+                        \n
+                    """,
                     str(self.request),
                 ],
             )
-            self.response = response.text
+            self.response = eval(response.text)
+            match int(self.response[0]):
+                case 1:
+                    self.response = model.generate_content(
+                        [
+                            "You are an application security testing tool. I am going to provide you with a code. Point out exactly what my vulnerabilities are, and mention the level of danger of the vulnerability, show the exact lines where the specific vulnerability is found, and finally generate the lines of code without the vulnerability\n\n",
+                            str(self.response[1]),
+                        ],
+                    ).text
+
+                case 2:
+                    code = git_repository(str(self.response[1]))
+                    self.response = model.generate_content(
+                        [
+                            "You are an application security testing tool. I am going to provide you with code from a github repository, with each file name. Point out exactly what my vulnerabilities are, and which file they are in, and mention the level of danger of the vulnerability, show the exact lines where the specific vulnerability is found\n\n",
+                            code,
+                        ],
+                    ).text
+
+                case _:
+                    self.response = "There was an error in processing the request. Please try again later."
+
         except:
             pass
         self.chat_history.append((not self.is_user, self.response))
@@ -51,7 +81,7 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
                     padding_block="5px",
                     background_color="#6e56cf",
                     border_radius="12px",
-                    max_width="70%",
+                    max_width="750px",
                     font_family="Instrument Sans",
                 ),
                 rx.image(
@@ -72,7 +102,7 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
                     padding_block="5px",
                     background_color="#1f1f1f",
                     border_radius="12px",
-                    max_width="70%",
+                    max_width="750px",
                     font_family="Instrument Sans",
                 ),
             ),
@@ -154,12 +184,11 @@ def index() -> rx.Component:
             ),
             rx.divider(),
             rx.text(
-                "Code Analyser and Application Security Tool is an intelligent LLM based chatbot capable of accepting code in different languages which identifies potential vulnerabilities in your code along with its fixes",
+                "Code Analyser and Application Security Testing Tool is an intelligent LLM based chatbot capable of accepting code in different languages which identifies potential vulnerabilities in your code along with its fixes",
                 size="4",
                 font_family="Instrument Sans",
             ),
             chatbox(),
-            padding_bottom="18px",
             align="center",
             spacing="5",
             justify="center",

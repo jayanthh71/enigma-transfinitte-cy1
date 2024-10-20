@@ -1,9 +1,9 @@
 # Overview
-## Code Analyser and Application Security Testing Tool
+## Code Analysis and Application Security Testing Tool
 
 CAAST.ai is an intelligent LLM based chatbot capable of accepting code in different languages which identifies potential vulnerabilities in your code along with its fixes.
 
-<img width="1449" alt="image" src="https://github.com/user-attachments/assets/72246192-5863-410c-b650-68b4d9b76775">
+<img width="1429" alt="image" src="https://github.com/user-attachments/assets/69577221-400f-45cf-8d95-81d2d0667aac">
 
 # Working
 

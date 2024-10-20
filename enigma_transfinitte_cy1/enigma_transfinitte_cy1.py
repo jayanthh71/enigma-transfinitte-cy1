@@ -56,7 +56,7 @@ def textbubble(is_user: bool, req: str = "", res: str = "") -> rx.Component:
                 ),
                 rx.image(
                     "user.png",
-                    width="37px",
+                    width="32px",
                     height="32px",
                 ),
             ),
@@ -148,17 +148,25 @@ def index() -> rx.Component:
         rx.vstack(
             rx.spacer(),
             rx.heading(
-                "Welcome to CAST.ai",
+                "Welcome to CAAST.ai",
                 size="9",
                 font_family="Instrument Sans",
             ),
             rx.divider(),
+            rx.text(
+                "Code Analyser and Application Security Tool is an intelligent LLM based chatbot capable of accepting code in different languages which identifies potential vulnerabilities in your code along with its fixes",
+                size="4",
+                font_family="Instrument Sans",
+            ),
             chatbox(),
+            padding_bottom="18px",
             align="center",
             spacing="5",
             justify="center",
             min_height="85vh",
         ),
+        background_image="url('main_background.png')",
+        background_size="cover",
     )
 
 

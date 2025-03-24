@@ -13,7 +13,7 @@ CAAST.ai is an intelligent LLM based chatbot capable of accepting code in differ
 
 # Contributors
 - [Jayanth Rameshkumar](https://github.com/jayanthh71)
-- [Harissh Sukumar](https://github.com/Harissh-Sukumar)
+- [Harissh Sukumar](https://github.com/harissh1263)
 - [Shruti V](https://github.com/titanium2967)
 - [Srishanth S](https://github.com/Srishanths812)
 - Anvita 

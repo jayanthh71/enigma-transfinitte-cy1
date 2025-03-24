@@ -9,3 +9,11 @@ CAAST.ai is an intelligent LLM based chatbot capable of accepting code in differ
 
 - We used [reflex](https://reflex.dev/) to create the frontend.
 - The LLM used here is [geminiai](https://gemini.google.com/app).
+
+
+# Contributors
+- [Jayanth Rameshkumar](https://github.com/jayanthh71)
+- [Harissh Sukumar](https://github.com/Harissh-Sukumar)
+- [Shruti V](https://github.com/titanium2967)
+- [Srishanth S](https://github.com/Srishanths812)
+- Anvita 
